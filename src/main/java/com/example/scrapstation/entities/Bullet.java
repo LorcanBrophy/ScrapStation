@@ -1,31 +1,23 @@
 package com.example.scrapstation.entities;
 
-import javafx.geometry.Point2D;
+import com.example.scrapstation.Collidable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Bullet {
-
+public class Bullet implements Collidable {
     private double x, y;
-    private final double width = 8, height = 4;
-    private final double speed;
-    private final Point2D direction;
-    private boolean alive = true;
-    private final int damage;
+    private final double width = 12;
+    private final double height = 8;
+    private final double speed = 8;
+    private boolean dead = false;
 
-    public Bullet(double x, double y, Point2D direction, double speed, int damage) {
+    public Bullet(double x, double y) {
         this.x = x;
         this.y = y;
-        this.direction = direction.normalize();
-        this.speed = speed;
-        this.damage = damage;
     }
 
     public void update() {
-        x += direction.getX() * speed;
-        y += direction.getY() * speed;
-
-        if (x > 800 || x < 0 || y > 600 || y < 0) alive = false;
+        x += speed;
     }
 
     public void draw(GraphicsContext gc) {
@@ -33,9 +25,13 @@ public class Bullet {
         gc.fillRect(x, y, width, height);
     }
 
-    public boolean isAlive() { return alive; }
-    public void setAlive(boolean alive) { this.alive = alive; }
-    public int getDamage() { return damage; }
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
 
     public double getX() { return x; }
     public double getY() { return y; }

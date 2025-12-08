@@ -1,73 +1,67 @@
 package com.example.scrapstation.entities;
 
+import com.example.scrapstation.Collidable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Player {
+public class Player implements Collidable {
 
     private double x, y;
+    private double speed = 2.5;
 
-    private int ammo = 20;
-    private final int maxAmmo = 20;
-    private boolean reloading = false;
-    private long reloadStartTime;
-    private final long reloadDuration = 2_000_000_000L;
+    private double width, height;
 
-    private int health = 3;
+    private double hp = 3;
 
-    public Player(double x, double y) {
+    public Player(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
     }
 
-    public void move(double dx, double dy) {
-        x += dx;
-        y += dy;
+    public void move(double dx, double dy, double maxWidth, double maxHeight) {
+        x += dx * speed;
+        y += dy * speed;
 
+        if (x < 0) x = 0;
+        if (x > maxWidth - width) x = maxWidth - width;
         if (y < 0) y = 0;
-        if (y > 600 - 40) y = 600 - 40;
+        if (y > maxHeight - height) y = maxHeight - height;
+    }
+
+    public void update() {
     }
 
     public void draw(GraphicsContext gc) {
-        gc.setFill(Color.RED);
-        gc.fillRect(x, y, 40, 40);
+        gc.setFill(Color.CYAN);
+        gc.fillRect(x, y, width, height);
     }
 
-    public double getX() {
-        return x;
-    }
-    public double getY() {
-        return y;
-    }
-
-    // ammo/reload
-    public boolean canShoot() { return ammo > 0 && !reloading; }
-    public void useAmmo() { if (ammo > 0) ammo--; }
-    public int getAmmo() { return ammo; }
-
-    public void startReload() {
-        if (!reloading && ammo < maxAmmo) {
-            reloading = true;
-            reloadStartTime = System.nanoTime();
-        }
+    // getters
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public double getWidth() { return width; }
+    public double getHeight() { return height; }
+    public double getHp() {
+        return hp;
     }
 
-    public void updateReload() {
-        if (reloading) {
-            long elapsed = System.nanoTime() - reloadStartTime;
-            if (elapsed >= reloadDuration) {
-                ammo = maxAmmo;
-                reloading = false;
-            }
-        }
+    public void setX(double x) {
+        this.x = x;
+    }
+    public void setY(double y) {
+        this.y = y;
+    }
+    public void setWidth(double width) {
+        this.width = width;
+    }
+    public void setHeight(double height) {
+        this.height = height;
     }
 
-    public boolean isReloading() {
-        return reloading;
-    }
 
-    // health
-    public void takeDamage(int damage) { health -= damage; }
-    public int getHealth() { return health; }
-    public boolean isDead() { return health <= 0; }
+    // methods
+    public void takeDamage() {
+        hp--;
+        if (hp < 0) hp = 0;
+    }
 }

@@ -1,6 +1,7 @@
 module com.example.scrapstation {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.desktop;
 
 
     opens com.example.scrapstation to javafx.fxml;
